@@ -404,7 +404,10 @@ export default class Bubble extends React.Component<BubbleProps> {
             accessibilityTraits='text'
             {...this.props.touchableProps}
           >
-            <View>
+            {this.renderUsername()}
+
+            {this.renderTicks()}
+            <View style={{flexDirection:'row',alignItems:'center'}}>
               {this.renderCustomView()}
               {this.renderMessageImage()}
               {this.renderMessageVideo()}
@@ -415,9 +418,7 @@ export default class Bubble extends React.Component<BubbleProps> {
                   bottomContainerStyle && bottomContainerStyle[position],
                 ]}
               >
-                {this.renderUsername()}
                 {this.renderTime()}
-                {this.renderTicks()}
               </View>
             </View>
           </TouchableWithoutFeedback>

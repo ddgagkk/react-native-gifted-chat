@@ -36,6 +36,7 @@ const styles = {
       color: Color.timeTextColor,
       ...textStyle,
     },
+    margin:5
   }),
   right: StyleSheet.create({
     container: {
@@ -45,6 +46,7 @@ const styles = {
       color: Color.white,
       ...textStyle,
     },
+    margin:5
   }),
 }
 

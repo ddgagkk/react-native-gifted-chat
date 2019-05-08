@@ -363,7 +363,7 @@ export default class Bubble extends React.Component<BubbleProps> {
       }
       return (
           <View style={styles[position].time}>
-            {this.props.isRead?<Text style={styles[position].textStatus}>this.props.statusLabel</Text>:null}
+            {this.props.isRead?<Text style={styles[position].textStatus}>{this.props.statusLabel}</Text>:null}
             <Text
                 style={styles[position].textTime}
             >

@@ -58,12 +58,17 @@ const styles = {
       marginRight: 10,
     },
     time: {
+      flexDirection:'column',
       textAlign: 'left',
       fontSize: 12,
       margin:5
     },
     textTime: {
       fontSize: 10,
+      backgroundColor: 'transparent',
+    },
+    textStatus: {
+      fontSize: 12,
       backgroundColor: 'transparent',
     }
   }),
@@ -98,12 +103,17 @@ const styles = {
       alignItems: 'flex-end'
     },
     time: {
+      flexDirection:'column',
       textAlign: 'right',
       fontSize: 12,
       margin: 5
     },
     textTime: {
       fontSize: 10,
+      backgroundColor: 'transparent',
+    },
+    textStatus: {
+      fontSize: 12,
       backgroundColor: 'transparent',
     }
   }),
@@ -345,16 +355,15 @@ export default class Bubble extends React.Component<BubbleProps> {
     return null;
   }
 
-  renderTime () {
+  renderTimeAndStatus () {
     if (this.props.currentMessage.createdAt) {
       const {position, currentMessage, timeFormat, ...timeProps} = this.props;
       if (this.props.renderTime) {
         return this.props.renderTime(timeProps);
       }
       return (
-          <View
-              style={styles[position].time}
-          >
+          <View style={styles[position].time}>
+            {this.props.isRead?<Text style={styles[position].textStatus}>Read</Text>:null}
             <Text
                 style={styles[position].textTime}
             >
@@ -421,6 +430,9 @@ export default class Bubble extends React.Component<BubbleProps> {
   }
 
 
+
+
+
   renderCustomView() {
     if (this.props.renderCustomView) {
       return this.props.renderCustomView(this.props)
@@ -441,11 +453,11 @@ export default class Bubble extends React.Component<BubbleProps> {
             style={styles[position].wrapper}>
           {this.renderUsername()}
           <View style={styles[position].bottom}>
-            {this.props.position === 'right' ? this.renderTime() : null}
+            {this.props.position === 'right' ? this.renderTimeAndStatus() : null}
             <View style={styles[position].containerText}>
               {this.renderMessageText()}
             </View>
-            {this.props.position === 'left' ? this.renderTime() : null}
+            {this.props.position === 'left' ? this.renderTimeAndStatus() : null}
           </View>
         </View>
     );

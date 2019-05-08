@@ -115,7 +115,7 @@ export default class Message extends React.Component<MessageProps> {
     if (this.props.renderBubble) {
       return this.props.renderBubble(props)
     }
-    return <Bubble {...props} />
+    return <Bubble {...props} isRead={this.props.isRead}/>
   }
 
   renderSystemMessage() {

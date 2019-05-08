@@ -215,7 +215,6 @@ export default class MessageContainer extends React.PureComponent<
   }
 
   scrollToIndex(params) {
-    console.log('scroll to index in flatlist',params)
     this.flatListRef.scrollToIndex(params)
     if (this.flatListRef) {
       //this.flatListRef.scrollToIndex(params);
@@ -250,7 +249,7 @@ export default class MessageContainer extends React.PureComponent<
     if (messages && user) {
       const previousMessage = messages[index + 1] || {}
       const nextMessage = messages[index - 1] || {}
-
+      const isRead = index>this.props.unreadMess-1?true:false
       const messageProps: Message['props'] = {
         ...restProps,
         key: item._id,
@@ -258,7 +257,8 @@ export default class MessageContainer extends React.PureComponent<
         previousMessage,
         nextMessage,
         position: item.user._id === user._id ? 'right' : 'left',
-        listIndex: index
+        listIndex: index,
+        isRead:isRead
       }
 
       if (this.props.renderMessage) {

@@ -207,14 +207,20 @@ export default class MessageContainer extends React.PureComponent<
   }
 
   scrollTo(options: { animated?: boolean; offset: number }) {
-    if (this.flatListRef && this.flatListRef.current && options) {
-      this.flatListRef.current.scrollToOffset(options)
-    }
+    this.flatListRef.scrollToOffset(options)
   }
 
   scrollToBottom = () => {
-    this.scrollTo({ offset: 0, animated: true })
+   this.scrollTo({ offset: 0, animated: true })
   }
+
+  scrollToIndex(params) {
+    console.log('scroll to index in flatlist',params)
+    this.flatListRef.scrollToIndex(params)
+    if (this.flatListRef) {
+      //this.flatListRef.scrollToIndex(params);
+    }
+  };
 
   handleOnScroll = (event: any) => {
     if (event.nativeEvent.contentOffset.y > this.props.scrollToBottomOffset!) {
@@ -252,6 +258,7 @@ export default class MessageContainer extends React.PureComponent<
         previousMessage,
         nextMessage,
         position: item.user._id === user._id ? 'right' : 'left',
+        listIndex: index
       }
 
       if (this.props.renderMessage) {
@@ -273,7 +280,7 @@ export default class MessageContainer extends React.PureComponent<
           onPress={this.scrollToBottom}
           hitSlop={{ top: 5, left: 5, right: 5, bottom: 5 }}
         >
-          <Text>V</Text>
+          <Text>m</Text>
         </TouchableOpacity>
       </View>
     )
@@ -310,7 +317,7 @@ export default class MessageContainer extends React.PureComponent<
           ? this.renderScrollToBottomWrapper()
           : null}
         <FlatList
-          ref={this.flatListRef}
+            ref={(component) => {this.flatListRef = component}}
           extraData={this.props.extraData}
           keyExtractor={this.keyExtractor}
           enableEmptySections

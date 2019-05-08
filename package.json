@@ -2,8 +2,8 @@
   "name": "react-native-gifted-chat",
   "version": "0.8.0",
   "description": "The most complete chat UI for React Native",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "./index.js",
+  "types": "src/index.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/FaridSafi/react-native-gifted-chat.git"
@@ -27,7 +27,7 @@
   "scripts": {
     "lint": "tslint --project .",
     "tsc": "tsc --noEmit",
-    "build": "rm -rf lib/ && tsc",
+    "build": "tsc",
     "precommit": "yarn lint",
     "test": "TZ=Europe/Paris jest --no-watchman",
     "test:watch": "TZ=Europe/Paris jest --watch",

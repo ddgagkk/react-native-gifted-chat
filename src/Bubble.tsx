@@ -14,7 +14,7 @@ import {
 import MessageText from './MessageText'
 import MessageImage from './MessageImage'
 import MessageVideo from './MessageVideo'
-
+import moment from "moment";
 import Time from './Time'
 import Color from './Color'
 
@@ -25,14 +25,17 @@ const styles = {
   left: StyleSheet.create({
     container: {
       flex: 1,
+      flexDirection: 'column',
       alignItems: 'flex-start',
     },
     wrapper: {
-      borderRadius: 15,
-      backgroundColor: Color.leftBubbleBackground,
       marginRight: 60,
       minHeight: 20,
-      justifyContent: 'flex-end',
+      marginBottom: 5,
+      alignItems: 'flex-start'
+    }, containerText: {
+      backgroundColor: Color.leftBubbleBackground,
+      borderRadius: 15,
     },
     containerToNext: {
       borderBottomLeftRadius: 3,
@@ -42,21 +45,47 @@ const styles = {
     },
     bottom: {
       flexDirection: 'row',
-      justifyContent: 'flex-start',
+      justifyContent: 'flex-end',
+      alignItems: 'flex-end'
     },
+    timeContainer: {
+      height: 10
+    },
+    standardFont: {
+      fontSize: 15,
+    },
+    headerItem: {
+      marginRight: 10,
+    },
+    time: {
+      textAlign: 'left',
+      fontSize: 12,
+      margin:5
+    },
+    textTime: {
+      fontSize: 10,
+      backgroundColor: 'transparent',
+    }
   }),
+
   right: StyleSheet.create({
     container: {
       flex: 1,
+      flexDirection: 'column',
       alignItems: 'flex-end',
     },
     wrapper: {
       borderRadius: 15,
-      backgroundColor: Color.defaultBlue,
-      marginLeft: 60,
+      marginLeft: 80,
+      marginBottom: 10,
       minHeight: 20,
-      justifyContent: 'flex-end',
+      justifyContent: 'flex-start',
     },
+    containerText: {
+      backgroundColor: Color.defaultBlue,
+      borderRadius: 15,
+    }
+    ,
     containerToNext: {
       borderBottomRightRadius: 3,
     },
@@ -65,9 +94,20 @@ const styles = {
     },
     bottom: {
       flexDirection: 'row',
-      justifyContent: 'flex-end',
+      justifyContent: 'flex-start',
+      alignItems: 'flex-end'
     },
+    time: {
+      textAlign: 'right',
+      fontSize: 12,
+      margin: 5
+    },
+    textTime: {
+      fontSize: 10,
+      backgroundColor: 'transparent',
+    }
   }),
+
   content: StyleSheet.create({
     tick: {
       fontSize: 10,
@@ -88,9 +128,11 @@ const styles = {
     usernameView: {
       flexDirection: 'row',
       marginHorizontal: 10,
+      justifyContent: 'flex-end'
     },
   }),
-}
+};
+
 
 const DEFAULT_OPTION_TITLES = ['Copy Text', 'Cancel']
 
@@ -271,16 +313,61 @@ export default class Bubble extends React.Component<BubbleProps> {
     return null
   }
 
-  renderMessageText() {
+  renderMessageText () {
     if (this.props.currentMessage && this.props.currentMessage.text) {
-      const { containerStyle, wrapperStyle, ...messageTextProps } = this.props
+      const {...messageTextProps} = this.props;
       if (this.props.renderMessageText) {
-        return this.props.renderMessageText(messageTextProps)
+        return this.props.renderMessageText(messageTextProps);
       }
-      return <MessageText {...messageTextProps} />
+      return <MessageText {...messageTextProps} />;
     }
-    return null
+    return null;
   }
+
+  renderUsername () {
+    const {currentMessage, user} = this.props;
+    if (this.props.renderUsernameOnMessage && currentMessage) {
+      if (user && currentMessage.user._id === user._id) {
+        return null;
+      }
+      return (
+          <View style={styles.content.usernameView}>
+            <Text
+                style={
+                  [styles.content.username, this.props.usernameStyle]
+                }
+            >
+              {currentMessage.user.name}
+            </Text>
+          </View>
+      );
+    }
+    return null;
+  }
+
+  renderTime () {
+    if (this.props.currentMessage.createdAt) {
+      const {position, currentMessage, timeFormat, ...timeProps} = this.props;
+      if (this.props.renderTime) {
+        return this.props.renderTime(timeProps);
+      }
+      return (
+          <View
+              style={styles[position].time}
+          >
+            <Text
+                style={styles[position].textTime}
+            >
+              {moment(currentMessage.createdAt).
+              format(timeFormat)}
+            </Text>
+
+          </View>
+      );
+    }
+    return null;
+  }
+
 
   renderMessageImage() {
     if (this.props.currentMessage && this.props.currentMessage.image) {
@@ -333,42 +420,6 @@ export default class Bubble extends React.Component<BubbleProps> {
     return null
   }
 
-  renderTime() {
-    if (this.props.currentMessage && this.props.currentMessage.createdAt) {
-      const {
-        containerStyle,
-        wrapperStyle,
-        textStyle,
-        ...timeProps
-      } = this.props
-      if (this.props.renderTime) {
-        return this.props.renderTime(timeProps)
-      }
-      return <Time {...timeProps} />
-    }
-    return null
-  }
-
-  renderUsername() {
-    const { currentMessage, user } = this.props
-    if (this.props.renderUsernameOnMessage && currentMessage) {
-      if (user && currentMessage.user._id === user._id) {
-        return null
-      }
-      return (
-        <View style={styles.content.usernameView}>
-          <Text
-            style={
-              [styles.content.username, this.props.usernameStyle] as TextStyle
-            }
-          >
-            ~ {currentMessage.user.name}
-          </Text>
-        </View>
-      )
-    }
-    return null
-  }
 
   renderCustomView() {
     if (this.props.renderCustomView) {
@@ -384,46 +435,19 @@ export default class Bubble extends React.Component<BubbleProps> {
       wrapperStyle,
       bottomContainerStyle,
     } = this.props
-    return (
-      <View
-        style={[
-          styles[position].container,
-          containerStyle && containerStyle[position],
-        ]}
-      >
-        <View
-          style={[
-            styles[position].wrapper,
-            wrapperStyle && wrapperStyle[position],
-            this.handleBubbleToNext(),
-            this.handleBubbleToPrevious(),
-          ]}
-        >
-          <TouchableWithoutFeedback
-            onLongPress={this.onLongPress}
-            accessibilityTraits='text'
-            {...this.props.touchableProps}
-          >
-            {this.renderUsername()}
 
-            {this.renderTicks()}
-            <View style={{flexDirection:'row',alignItems:'center'}}>
-              {this.renderCustomView()}
-              {this.renderMessageImage()}
-              {this.renderMessageVideo()}
+    return (
+        <View
+            style={styles[position].wrapper}>
+          {this.renderUsername()}
+          <View style={styles[position].bottom}>
+            {this.props.position === 'right' ? this.renderTime() : null}
+            <View style={styles[position].containerText}>
               {this.renderMessageText()}
-              <View
-                style={[
-                  styles[position].bottom,
-                  bottomContainerStyle && bottomContainerStyle[position],
-                ]}
-              >
-                {this.renderTime()}
-              </View>
             </View>
-          </TouchableWithoutFeedback>
+            {this.props.position === 'left' ? this.renderTime() : null}
+          </View>
         </View>
-      </View>
-    )
+    );
   }
 }

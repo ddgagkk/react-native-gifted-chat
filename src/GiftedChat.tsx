@@ -209,6 +209,7 @@ class GiftedChat extends React.Component<GiftedChatProps, GiftedChatState> {
     renderAccessory: null,
     onPressActionButton: null,
     bottomOffset: 0,
+    indexUnreadMess:0,
     minInputToolbarHeight: 44,
     keyboardShouldPersistTaps: Platform.select({
       ios: 'never',
@@ -266,6 +267,7 @@ class GiftedChat extends React.Component<GiftedChatProps, GiftedChatState> {
     renderAccessory: PropTypes.func,
     onPressActionButton: PropTypes.func,
     bottomOffset: PropTypes.number,
+    indexUnreadMess: PropTypes.number,
     minInputToolbarHeight: PropTypes.number,
     listViewProps: PropTypes.object,
     keyboardShouldPersistTaps: PropTypes.oneOf(['always', 'never', 'handled']),
@@ -556,6 +558,15 @@ class GiftedChat extends React.Component<GiftedChatProps, GiftedChatState> {
     if (this._messageContainerRef && this._messageContainerRef.current) {
       this._messageContainerRef.current.scrollTo({ offset: 0, animated })
     }
+  }
+
+  // Trigger onPress using ref to <GiftedChat />
+  // Eg: this._giftedChatRef.scrollToIndex({index: 8, viewOffset: 0, viewPosition: 1})
+  scrollToIndex(params) {
+    if (this._messageContainerRef === null) {
+      return;
+    }
+    this._messageContainerRef.scrollToIndex(params);
   }
 
   renderMessages() {
